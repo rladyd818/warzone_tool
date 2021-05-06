@@ -1,0 +1,20 @@
+{
+  "name": "sw-packet",
+  "version": "1.0.0",
+  "description": "This is sw-packet analysis",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "app": "^0.1.0",
+    "uuid": "^3.4.0",
+    "http-mitm-proxy": "^0.9.0",
+    "sanitize-filename": "^1.6.3",
+    "fast-csv": "^4.3.6",
+    "dateformat": "^3.0.3",
+    "request": "^2.88.2"
+  }
+}
