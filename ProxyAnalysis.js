@@ -45,7 +45,7 @@ class SWProxy extends EventEmitter {
 				ctx.SWResponseChunks = [];
 				ctx.onRequestData(function (ctx, chunk, callback) {
 					ctx.SWRequestChunks.push(chunk);
-					console.log("요청 정보 chunk: ", decrypt_request(chunk.toString()));
+					// console.log("요청 정보 chunk: ", decrypt_request(chunk.toString()));
 					// let dec = decrypt_request(chunk.toString());
 					// dec.command = "GetWorldBossStatus";
 					// chunk = Buffer.from(encrypt_request(JSON.stringify(dec)));
@@ -56,7 +56,7 @@ class SWProxy extends EventEmitter {
 				ctx.onResponseData(function (ctx, chunk, callback) {
 					ctx.SWResponseChunks.push(chunk);
 					// console.log("응답 정보 chunk: ", chunk.toString());
-					console.log(decrypt_response(chunk.toString()));
+					// console.log(decrypt_response(chunk.toString()));
 					return callback(null, chunk);
 				});
 				ctx.onResponseEnd(function (ctx, callback) {
