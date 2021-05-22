@@ -6,7 +6,7 @@ function Top() {
 	console.log(platform);
 	return (
 		<div>
-			<h1>Test Main Page</h1>
+			<h3>Contents Section</h3>
 			<h4>Your OS is {platform}</h4>
 		</div>
 	);

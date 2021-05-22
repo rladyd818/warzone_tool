@@ -9,10 +9,12 @@ module.exports = {
 		filename: "bundle.js",
 		publicPath: "/",
 	},
+	// target: "electron-renderer",
+	devtool: "eval-cheap-module-source-map",
 	module: {
 		rules: [
 			{
-				test: /\.(ts|js)x?$/,
+				test: /\.js?$/,
 				exclude: /node_modules/,
 				use: {
 					loader: "babel-loader",
@@ -33,7 +35,7 @@ module.exports = {
 	devServer: {
 		contentBase: path.join(__dirname, "./dist"),
 		port: 8080,
-		historyApiFallback: true,
+		// historyApiFallback: true,
 		// proxy: {
 		// 	"/users": {
 		// 		target: "http://localhost:3000",

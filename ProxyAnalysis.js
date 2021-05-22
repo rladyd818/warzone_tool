@@ -1,4 +1,3 @@
-const EventEmitter = require("events");
 // const { app } = require("electron");
 const fs = require("fs-extra");
 const fsOri = require("fs");
@@ -8,6 +7,7 @@ const net = require("net");
 const url = require("url");
 const uuidv4 = require("uuid/v4");
 const Proxy = require("http-mitm-proxy");
+const EventEmitter = require("events");
 
 const {
 	decrypt_request,
@@ -80,6 +80,8 @@ class SWProxy extends EventEmitter {
 						return callback();
 					}
 
+					console.log("요청정보: ", reqData);
+					// console.log("응답정보: ", respData);
 					const { command } = respData;
 					const timeStamp = new Date().getTime();
 					const jsonPath = path.join(config.Config.App.filesPath, command);
@@ -167,7 +169,7 @@ class SWProxy extends EventEmitter {
 		if (process.env.autostart) {
 			console.log(`SW Exporter Proxy is listening on port ${port}`);
 		}
-		// win.webContents.send("proxyStarted");
+		win.webContents.send("proxyStarted");
 	}
 
 	stop() {
@@ -180,9 +182,9 @@ class SWProxy extends EventEmitter {
 	getInterfaces() {
 		this.addresses = [];
 		const interfaces = os.networkInterfaces();
-		for (const k in interfaces) {
-			for (const k2 in interfaces[k]) {
-				const address = interfaces[k][k2];
+		for (const i in interfaces) {
+			for (const j in interfaces[i]) {
+				const address = interfaces[i][j];
 				if (address.family === "IPv4" && !address.internal) {
 					this.addresses.push(address.address);
 				}

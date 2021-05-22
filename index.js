@@ -1,10 +1,18 @@
 const SWProxy = require("./ProxyAnalysis");
 const fs = require("fs-extra");
+// const storage = require("electron-json-storage");
+// const windowStateKeeper = require("electron-window-state");
 const _ = require("lodash");
+const { app, BrowserWindow, ipcMain } = require("electron");
+
+// const url = require("url");
+const path = require("path");
+const isDev = require("electron-is-dev");
+
 global.gMapping = require("./mapping");
 global.appVersion = "testVersion";
 
-const path = require("path");
+// const path = require("path");
 
 // let defaultFilePath = path.join(app.getPath("desktop"), `${app.name} Files`);
 let defaultFilePath = `/Users/yongkim/Desktop/test/APIs`;
@@ -18,7 +26,7 @@ let defaultConfig = {
 			httpsMode: true,
 			minimizeToTray: false,
 		},
-		Proxy: { port: 8080, autoStart: false },
+		Proxy: { port: 3333, autoStart: false },
 		Plugins: {},
 	},
 };
@@ -39,9 +47,112 @@ let defaultConfigDetails = {
 global.config = defaultConfig;
 global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
 
+function createWindow() {
+	const win = new BrowserWindow({
+		webPreferences: {
+			preload: path.join(__dirname, "./preload.js"),
+			// nodeIntegration: true,
+			// enableRemoteModule: true,
+			contextIsolation: true,
+		},
+		width: 800,
+		height: 600,
+	});
+
+	global.win = win;
+
+	win.webContents.send("greeting2", "hi");
+	const startUrl = isDev
+		? "http://localhost:8080"
+		: process.env.ELECTRON_START_URL ||
+		  url.format({
+				pathname: path.join(__dirname, "./dist/index.html"),
+				protocol: "file:",
+				slashes: true,
+		  });
+
+	global.win.loadURL(startUrl);
+	// global.win.loadURL("http://localhost:8080");
+
+	if (isDev) {
+		global.win.webContents.openDevTools();
+	}
+
+	global.win.on("closed", () => {
+		global.win = null;
+	});
+}
+
+app.on("ready", () => {
+	createWindow();
+});
+
+app.on("window-all-closed", () => {
+	if (process.platform !== "darwin") {
+		app.quit();
+	}
+});
+
+app.on("activate", () => {
+	if (global.win === null) {
+		createWindow();
+	}
+});
+
 const proxy = new SWProxy();
 
 proxy.on("error", () => {});
+
+// 프록시 러닝상태 체크
+ipcMain.on("proxyIsRunning", (event) => {
+	event.returnValue = proxy.isRunning();
+});
+
+ipcMain.on("proxyGetInterfaces", (event) => {
+	event.returnValue = proxy.getInterfaces();
+});
+
+ipcMain.on("proxyStart", () => {
+	proxy.start(config.Config.Proxy.port);
+});
+
+ipcMain.on("proxyStop", () => {
+	proxy.stop();
+});
+
+ipcMain.on("greeting", (context, args) => {
+	console.log(context, args);
+	context.returnValue = "nice";
+	// context.sender.send("greeting", "nice");
+});
+ipcMain.on("getCert", async () => {
+	const fileExists = await fs.pathExists(
+		path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem")
+	);
+	if (fileExists) {
+		const copyPath = path.join(
+			global.config.Config.App.filesPath,
+			"cert",
+			"ca.pem"
+		);
+		await fs.copy(
+			path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem"),
+			copyPath
+		);
+		proxy.log({
+			type: "success",
+			source: "proxy",
+			message: `Certificate copied to ${copyPath}.`,
+		});
+	} else {
+		proxy.log({
+			type: "info",
+			source: "proxy",
+			message:
+				"No certificate available yet. You might have to start the proxy once and then try again.",
+		});
+	}
+});
 
 // const ip = proxy.getInterfaces();
 // const port = "8080";
@@ -123,49 +234,49 @@ function loadPlugins() {
 	return plugins;
 }
 
-proxy.start(config.Config.Proxy.port);
+// proxy.start(config.Config.Proxy.port);
 
 // ipcMain.on("proxyIsRunning", (event) => {
 // 	event.returnValue = proxy.isRunning();
 // });
 
-// ipcMain.on("proxyGetInterfaces", (event) => {
-// 	event.returnValue = proxy.getInterfaces();
-// });
+// // ipcMain.on("proxyGetInterfaces", (event) => {
+// // 	event.returnValue = proxy.getInterfaces();
+// // });
 
-// ipcMain.on("proxyStart", () => {
-// 	proxy.start(config.Config.Proxy.port);
-// });
+// // ipcMain.on("proxyStart", () => {
+// // 	proxy.start(config.Config.Proxy.port);
+// // });
 
-// ipcMain.on("proxyStop", () => {
-// 	proxy.stop();
-// });
+// // ipcMain.on("proxyStop", () => {
+// // 	proxy.stop();
+// // });
 
-// ipcMain.on("getCert", async () => {
-// 	const fileExists = await fs.pathExists(
-// 		path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem")
-// 	);
-// 	if (fileExists) {
-// 		const copyPath = path.join(
-// 			global.config.Config.App.filesPath,
-// 			"cert",
-// 			"ca.pem"
-// 		);
-// 		await fs.copy(
-// 			path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem"),
-// 			copyPath
-// 		);
-// 		proxy.log({
-// 			type: "success",
-// 			source: "proxy",
-// 			message: `Certificate copied to ${copyPath}.`,
-// 		});
-// 	} else {
-// 		proxy.log({
-// 			type: "info",
-// 			source: "proxy",
-// 			message:
-// 				"No certificate available yet. You might have to start the proxy once and then try again.",
-// 		});
-// 	}
-// });
+// // ipcMain.on("getCert", async () => {
+// // 	const fileExists = await fs.pathExists(
+// // 		path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem")
+// // 	);
+// // 	if (fileExists) {
+// // 		const copyPath = path.join(
+// // 			global.config.Config.App.filesPath,
+// // 			"cert",
+// // 			"ca.pem"
+// // 		);
+// // 		await fs.copy(
+// // 			path.join(app.getPath("userData"), "swcerts", "certs", "ca.pem"),
+// // 			copyPath
+// // 		);
+// // 		proxy.log({
+// // 			type: "success",
+// // 			source: "proxy",
+// // 			message: `Certificate copied to ${copyPath}.`,
+// // 		});
+// // 	} else {
+// // 		proxy.log({
+// // 			type: "info",
+// // 			source: "proxy",
+// // 			message:
+// // 				"No certificate available yet. You might have to start the proxy once and then try again.",
+// // 		});
+// // 	}
+// // });

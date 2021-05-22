@@ -2,12 +2,35 @@
 	"name": "sw-packet",
 	"version": "1.0.0",
 	"description": "This is sw-packet analysis",
-	"main": "index.js",
+	"main": "./index.js",
+	"homepage": "./",
 	"scripts": {
 		"bundle": "webpack",
-		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "webpack-dev-server --mode development --open --hot",
-		"build": "webpack --mode production"
+		"build": "webpack --mode production",
+		"pack": "electron-builder --dir",
+		"test": "node scripts/test.js --env=jsdom",
+		"dist": "yarn run build && electron-builder -m",
+		"electron": "set ELECTRON_START_URL=http://localhost:8080 && electron .",
+		"electron-dev": "concurrently \"yarn start\" \"wait-on http://localhost:8080 && electron .\""
+	},
+	"build": {
+		"productName": "Warzone-export",
+		"appId": "com.electron.sw-exporter",
+		"win": {
+			"target": [
+				"zip",
+				"nsis"
+			]
+		},
+		"nsis": {
+			"oneClick": false,
+			"perMachine": true,
+			"allowToChangeInstallationDirectory": true,
+			"language": 1042,
+			"include": "build/installer.nsh",
+			"shortcutName": "shortcut"
+		}
 	},
 	"author": "",
 	"license": "ISC",
@@ -16,12 +39,19 @@
 		"@babel/plugin-transform-modules-commonjs": "^7.14.0",
 		"@babel/preset-env": "^7.14.2",
 		"@babel/preset-react": "^7.13.13",
+		"@material-ui/core": "^4.11.4",
+		"@material-ui/icons": "^4.11.2",
 		"app": "^0.1.0",
+		"asar": "^3.0.3",
 		"babel-loader": "^8.2.2",
 		"css-loader": "^5.2.4",
 		"dateformat": "^3.0.3",
+		"electron-is-dev": "^2.0.0",
+		"electron-json-storage": "^4.5.0",
+		"electron-window-state": "^5.0.3",
 		"fast-csv": "^4.3.6",
 		"file-loader": "^6.2.0",
+		"fs-extra": "^8.1.0",
 		"html-webpack-plugin": "^4.3.0",
 		"http-mitm-proxy": "^0.9.0",
 		"react": "^17.0.2",
@@ -30,9 +60,15 @@
 		"request": "^2.88.2",
 		"sanitize-filename": "^1.6.3",
 		"style-loader": "^2.0.0",
-		"uuid": "^3.4.0",
+		"uuid": "^3.4.0"
+	},
+	"devDependencies": {
+		"concurrently": "^6.1.0",
+		"electron": "^11.1.1",
+		"electron-builder": "^22.10.5",
+		"wait-on": "^5.3.0",
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
-		"webpack-dev-server": "^3.11.0"
+		"webpack-dev-server": "^3.11.2"
 	}
 }
