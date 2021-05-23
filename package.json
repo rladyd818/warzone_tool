@@ -1,5 +1,5 @@
 {
-	"name": "sw-packet",
+	"name": "Warzone",
 	"version": "1.0.0",
 	"description": "This is sw-packet analysis",
 	"main": "./index.js",
@@ -12,7 +12,7 @@
 		"test": "node scripts/test.js --env=jsdom",
 		"dist": "yarn run build && electron-builder -m",
 		"electron": "set ELECTRON_START_URL=http://localhost:8080 && electron .",
-		"electron-dev": "concurrently \"yarn start\" \"wait-on http://localhost:8080 && electron .\""
+		"dev": "concurrently \"yarn start\" \"wait-on http://localhost:8080 && electron .\""
 	},
 	"build": {
 		"productName": "Warzone-export",

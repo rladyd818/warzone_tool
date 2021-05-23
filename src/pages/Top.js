@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 
-const thisOS = process.platform;
+// const thisOS = process.platform;
 function Top() {
-	const [platform, setPlatform] = useState(thisOS);
-	console.log(platform);
+	// const [platform, setPlatform] = useState(thisOS);
+	// console.log(platform);
 	return (
 		<div>
-			<h3>Contents Section</h3>
-			<h4>Your OS is {platform}</h4>
+			<h1 style={{ textAlign: "center", marginTop: "8px" }}>
+				Warzone Exporter
+			</h1>
 		</div>
 	);
 }

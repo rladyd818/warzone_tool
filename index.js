@@ -5,17 +5,16 @@ const fs = require("fs-extra");
 const _ = require("lodash");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
-// const url = require("url");
+const url = require("url");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
 global.gMapping = require("./mapping");
 global.appVersion = "testVersion";
 
-// const path = require("path");
-
-// let defaultFilePath = path.join(app.getPath("desktop"), `${app.name} Files`);
-let defaultFilePath = `/Users/yongkim/Desktop/test/APIs`;
+let defaultFilePath = path.join(app.getPath("desktop"), `${app.name} Files`);
+// console.log(path.join(app.getPath("desktop"), `${app.name} Files`));
+// let defaultFilePath = `/Users/yongkim/Desktop/test/APIs`;
 let defaultConfig = {
 	Config: {
 		App: {
@@ -61,7 +60,7 @@ function createWindow() {
 
 	global.win = win;
 
-	win.webContents.send("greeting2", "hi");
+	// win.webContents.send("greeting2", "hi");
 	const startUrl = isDev
 		? "http://localhost:8080"
 		: process.env.ELECTRON_START_URL ||
@@ -72,7 +71,6 @@ function createWindow() {
 		  });
 
 	global.win.loadURL(startUrl);
-	// global.win.loadURL("http://localhost:8080");
 
 	if (isDev) {
 		global.win.webContents.openDevTools();
@@ -105,6 +103,7 @@ proxy.on("error", () => {});
 
 // 프록시 러닝상태 체크
 ipcMain.on("proxyIsRunning", (event) => {
+	console.log("isRunning에 들어왔는지 확인한다.!!!!!!!!!");
 	event.returnValue = proxy.isRunning();
 });
 
@@ -113,10 +112,12 @@ ipcMain.on("proxyGetInterfaces", (event) => {
 });
 
 ipcMain.on("proxyStart", () => {
+	console.log("proxyStart 들어온거 맞니?");
 	proxy.start(config.Config.Proxy.port);
 });
 
 ipcMain.on("proxyStop", () => {
+	console.log("proxyStop 들어온거 맞니?");
 	proxy.stop();
 });
 
