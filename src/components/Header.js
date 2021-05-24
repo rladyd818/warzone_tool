@@ -55,16 +55,29 @@ function Header() {
 
 	const changeProxy = useCallback(() => {
 		let state = window.electronProxy.isRunning();
-		state
-			? window.electronProxy.proxyStop()
-			: window.electronProxy.proxyStart();
-		setProxyState(state);
+		if (window.electronProxy.isRunning()) {
+			console.log("종료");
+			window.electronProxy.proxyStop();
+		} else {
+			console.log("시작");
+			window.electronProxy.proxyStart();
+		}
+		// state
+		// 	? window.electronProxy.proxyStop()
+		// 	: window.electronProxy.proxyStart();
+		console.log(
+			"실행되고 난 후 proxyState: ",
+			window.electronProxy.isRunning()
+		);
+		setProxyState(window.electronProxy.isRunning());
 	}, [proxyState]);
 
 	// // proxy running상태 change
 	useEffect(() => {
 		window.electronProxy.onProxyStarted(() => {
-			setProxyState(true);
+			console.log("use Effect에 started 들어왔음", proxyState);
+			// window.electronProxy.removeProxyStarted();
+			// setProxyState(true);
 		});
 
 		return () => {
@@ -74,8 +87,9 @@ function Header() {
 
 	useEffect(() => {
 		window.electronProxy.onProxyStopped(() => {
-			console.log("stopped로 들어왔음", proxyState);
-			setProxyState(false);
+			console.log("use Effect에  stopped로 들어왔음", proxyState);
+			// window.electronProxy.removeProxyStopped();
+			// setProxyState(false);
 		});
 
 		return () => {

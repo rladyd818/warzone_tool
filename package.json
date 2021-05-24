@@ -2,15 +2,15 @@
 	"name": "Warzone",
 	"version": "1.0.0",
 	"description": "This is sw-packet analysis",
-	"main": "./index.js",
-	"homepage": "./",
+	"main": "./src/main.js",
 	"scripts": {
 		"bundle": "webpack",
 		"start": "webpack-dev-server --mode development --open --hot",
 		"build": "webpack --mode production",
 		"pack": "electron-builder --dir",
 		"test": "node scripts/test.js --env=jsdom",
-		"dist": "yarn run build && electron-builder -m",
+		"dist": "yarn run build && electron-builder",
+		"dist-all": "yarn run build && electron-builder -mwl",
 		"electron": "set ELECTRON_START_URL=http://localhost:8080 && electron .",
 		"dev": "concurrently \"yarn start\" \"wait-on http://localhost:8080 && electron .\""
 	},
@@ -28,7 +28,7 @@
 			"perMachine": true,
 			"allowToChangeInstallationDirectory": true,
 			"language": 1042,
-			"include": "build/installer.nsh",
+			"include": "./installer.nsh",
 			"shortcutName": "shortcut"
 		}
 	},
