@@ -26,7 +26,6 @@
 		"nsis": {
 			"oneClick": false,
 			"perMachine": true,
-			"allowToChangeInstallationDirectory": true,
 			"language": 1042,
 			"include": "./installer.nsh",
 			"shortcutName": "shortcut"

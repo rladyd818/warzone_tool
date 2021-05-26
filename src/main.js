@@ -1,6 +1,6 @@
 const SWProxy = require("./proxy/ProxyAnalysis");
 const fs = require("fs-extra");
-// const storage = require("electron-json-storage");
+const storage = require("electron-json-storage");
 // const windowStateKeeper = require("electron-window-state");
 const _ = require("lodash");
 const { app, BrowserWindow, ipcMain } = require("electron");
@@ -46,6 +46,10 @@ let defaultConfigDetails = {
 global.config = defaultConfig;
 global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
 
+// 바탕화면에 경로생성
+fs.ensureDirSync(global.config.Config.App.filesPath);
+fs.ensureDirSync(path.join(global.config.Config.App.filesPath, "plugins"));
+
 function createWindow() {
 	const win = new BrowserWindow({
 		webPreferences: {
@@ -71,9 +75,9 @@ function createWindow() {
 
 	global.win.loadURL(startUrl);
 
-	if (isDev) {
-		global.win.webContents.openDevTools();
-	}
+	// if (isDev) {
+	global.win.webContents.openDevTools();
+	// }
 
 	global.win.on("closed", () => {
 		global.win = null;
@@ -165,7 +169,7 @@ ipcMain.on("getCert", async () => {
 
 // 	const pluginDirs = [
 // 		path.join(__dirname, "plugins"),
-// 		// path.join(global.config.Config.App.filesPath, "plugins"),
+// 		path.join(global.config.Config.App.filesPath, "plugins"),
 // 	];
 
 // 	// Load each plugin module in the folder

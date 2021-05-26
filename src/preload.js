@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld("electronProxy", {
 	proxyStop: () => ipcRenderer.sendSync("proxyStop"),
 
 	proxyGetInterfaces: () => ipcRenderer.sendSync("proxyGetInterfaces"),
+
+	getCert: () => ipcRenderer.sendSync("getCert"),
 });
 
 // window.addEventListener("DOMContentLoaded", () => {

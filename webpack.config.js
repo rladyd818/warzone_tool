@@ -36,9 +36,9 @@ module.exports = {
 		contentBase: path.join(__dirname, "./dist"),
 		port: 8080,
 	},
-	plugins: [
-		new HtmlWebpackPlugin({
-			template: "./src/index.html",
-		}),
-	],
+	// plugins: [
+	// 	new HtmlWebpackPlugin({
+	// 		template: "./src/index.html",
+	// 	}),
+	// ],
 };

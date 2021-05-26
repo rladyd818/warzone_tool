@@ -53,6 +53,10 @@ function Header() {
 		window.electronProxy.isRunning()
 	);
 
+	const copyCert = useCallback(() => {
+		window.electronProxy.getCert();
+	}, []);
+
 	const changeProxy = useCallback(() => {
 		let state = window.electronProxy.isRunning();
 		if (window.electronProxy.isRunning()) {
@@ -210,6 +214,7 @@ function Header() {
 							color="primary"
 							className={classes.right}
 							endIcon={<Icon>send</Icon>}
+							onClick={copyCert}
 						>
 							Get Cert
 						</Button>
