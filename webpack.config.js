@@ -2,17 +2,19 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
 	// webpack will take the files from ./src/index
-	entry: "./src/index",
+	entry: "./src/View.js",
 	// and output it into /dist as bundle.js
 	output: {
-		path: path.join(__dirname, "/dist"),
-		filename: "bundle.js",
-		publicPath: "/",
+		path: path.join(process.cwd(), "src"),
+		filename: "./bundle.js",
+		// publicPath: "/",
 	},
+	// target: "electron-renderer",
+	devtool: "eval-cheap-module-source-map",
 	module: {
 		rules: [
 			{
-				test: /\.(ts|js)x?$/,
+				test: /\.js?$/,
 				exclude: /node_modules/,
 				use: {
 					loader: "babel-loader",
@@ -33,17 +35,10 @@ module.exports = {
 	devServer: {
 		contentBase: path.join(__dirname, "./dist"),
 		port: 8080,
-		historyApiFallback: true,
-		// proxy: {
-		// 	"/users": {
-		// 		target: "http://localhost:3000",
-		// 		changeOrigin: true,
-		// 	},
-		// },
 	},
-	plugins: [
-		new HtmlWebpackPlugin({
-			template: "./src/index.html",
-		}),
-	],
+	// plugins: [
+	// 	new HtmlWebpackPlugin({
+	// 		template: "./src/index.html",
+	// 	}),
+	// ],
 };
