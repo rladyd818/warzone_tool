@@ -174,9 +174,11 @@ function Header() {
 		setIp(event.target.value);
 	};
 
-	const [Port, setPort] = React.useState(3333);
-	const handleValue = (event) => {
-		setPort(event.target.value);
+	const [Port, setPort] = React.useState(8080);
+	const handleValue = (e) => {
+		const port = e.target.value;
+		setPort(port);
+		config.Config.Proxy.port = port;
 	};
 
 	return (

@@ -46,18 +46,11 @@ class SWProxy extends EventEmitter {
 				ctx.SWResponseChunks = [];
 				ctx.onRequestData(function (ctx, chunk, callback) {
 					ctx.SWRequestChunks.push(chunk);
-					// console.log("요청 정보 chunk: ", decrypt_request(chunk.toString()));
-					// let dec = decrypt_request(chunk.toString());
-					// dec.command = "GetWorldBossStatus";
-					// chunk = Buffer.from(encrypt_request(JSON.stringify(dec)));
-					// console.log("요청 정보 chunk2: ", decrypt_request(chunk.toString()));
 					return callback(null, chunk);
 				});
 
 				ctx.onResponseData(function (ctx, chunk, callback) {
 					ctx.SWResponseChunks.push(chunk);
-					// console.log("응답 정보 chunk: ", chunk.toString());
-					// console.log(decrypt_response(chunk.toString()));
 					return callback(null, chunk);
 				});
 				ctx.onResponseEnd(function (ctx, callback) {
@@ -82,10 +75,8 @@ class SWProxy extends EventEmitter {
 					}
 
 					console.log("요청정보: ", reqData);
-					// console.log("응답정보: ", respData);
 					const { command } = respData;
 					const timeStamp = new Date().getTime();
-					// const jsonPath = path.join(config.Config.App.filesPath, command);
 					const jsonPath = path.join(
 						app.getPath("desktop"),
 						`${app.name} Files`,
@@ -117,8 +108,6 @@ class SWProxy extends EventEmitter {
 								});
 						}
 					);
-					// console.log("respData: ", respData);
-					// console.log("reqData: ", reqData);
 					if (
 						config.Config.App.clearLogOnLogin &&
 						(command === "HubUserLogin" || command === "GuestLogin")
@@ -138,7 +127,6 @@ class SWProxy extends EventEmitter {
 		});
 		this.proxy.onConnect(function (req, socket, head, callback) {
 			const serverUrl = url.parse(`https://${req.url}`);
-			// console.log("서버 URL: ", serverUrl);
 			if (req.url.includes("qpyou.cn") && config.Config.App.httpsMode) {
 				return callback();
 			} else {

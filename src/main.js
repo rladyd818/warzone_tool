@@ -25,7 +25,7 @@ let defaultConfig = {
 			httpsMode: true,
 			minimizeToTray: false,
 		},
-		Proxy: { port: 3333, autoStart: false },
+		Proxy: { port: 8080, autoStart: false },
 		Plugins: {},
 	},
 };
@@ -86,6 +86,22 @@ function createWindow() {
 
 app.on("ready", () => {
 	createWindow();
+
+	// storage.getAll((error, data) => {
+	// 	if (error) throw error;
+
+	// 	global.config = _.merge(defaultConfig, data);
+	// 	global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
+
+	// 	fs.ensureDirSync(global.config.Config.App.filesPath);
+	// 	fs.ensureDirSync(path.join(global.config.Config.App.filesPath, "plugins"));
+
+	// 	// global.plugins = loadPlugins();
+
+	// 	if (process.env.autostart || global.config.Config.Proxy.autoStart) {
+	// 		proxy.start(process.env.port || config.Config.Proxy.port);
+	// 	}
+	// });
 });
 
 app.on("window-all-closed", () => {
@@ -157,6 +173,49 @@ ipcMain.on("getCert", async () => {
 		});
 	}
 });
+
+// app.on("ready", () => {
+// 	app.setAppUserModelId(process.execPath);
+// 	createWindow();
+
+// 	if (process.platform === "darwin") {
+// 		// Create our menu entries so that we can use MAC shortcuts like copy & paste
+// 		Menu.setApplicationMenu(
+// 			Menu.buildFromTemplate([
+// 				{
+// 					label: "Edit",
+// 					submenu: [
+// 						{ role: "undo" },
+// 						{ role: "redo" },
+// 						{ type: "separator" },
+// 						{ role: "cut" },
+// 						{ role: "copy" },
+// 						{ role: "paste" },
+// 						{ role: "pasteandmatchstyle" },
+// 						{ role: "delete" },
+// 						{ role: "selectall" },
+// 					],
+// 				},
+// 			])
+// 		);
+// 	}
+
+// 	storage.getAll((error, data) => {
+// 		if (error) throw error;
+
+// 		global.config = _.merge(defaultConfig, data);
+// 		global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
+
+// 		fs.ensureDirSync(global.config.Config.App.filesPath);
+// 		fs.ensureDirSync(path.join(global.config.Config.App.filesPath, "plugins"));
+
+// 		// global.plugins = loadPlugins();
+
+// 		if (process.env.autostart || global.config.Config.Proxy.autoStart) {
+// 			proxy.start(process.env.port || config.Config.Proxy.port);
+// 		}
+// 	});
+// });
 
 // const ip = proxy.getInterfaces();
 // const port = "8080";
