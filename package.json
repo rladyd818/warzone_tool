@@ -29,7 +29,10 @@
 			"language": 1042,
 			"include": "./installer.nsh",
 			"shortcutName": "shortcut"
-		}
+		},
+		"extraResources": [
+			"./alarms/**"
+		]
 	},
 	"author": "",
 	"license": "ISC",

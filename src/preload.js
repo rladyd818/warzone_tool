@@ -3,44 +3,45 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("electronProxy", {
 	onProxyStarted: (callback) => {
 		ipcRenderer.on("proxyStarted", (event, args) => {
-			console.log("onProxyStarted에는 들어왔다 지금");
 			callback(true);
 		});
 	},
 
 	onProxyStopped: (callback) => {
 		ipcRenderer.on("proxyStopped", (event, args) => {
-			console.log("onProxyStopped에 들어왔다 지금");
 			callback(false);
 		});
 	},
 
 	onCommand: (callback) => {
 		ipcRenderer.on("onCommand", (event, args) => {
-			// console.log("onCommand들어옴");
 			callback(args);
 		});
 	},
 
 	removeProxyStarted: () => {
-		console.log("started삭제에 들어왔니?");
 		ipcRenderer.removeAllListeners("proxyStarted");
 	},
 
 	removeProxyStopped: () => {
-		console.log("stopped삭제에 들어왔니?");
 		ipcRenderer.removeAllListeners("proxyStopped");
 	},
 
 	isRunning: () => ipcRenderer.sendSync("proxyIsRunning"),
 
-	proxyStart: () => ipcRenderer.sendSync("proxyStart"),
+	proxyStart: () => ipcRenderer.send("proxyStart"),
 
-	proxyStop: () => ipcRenderer.sendSync("proxyStop"),
+	proxyStop: () => ipcRenderer.send("proxyStop"),
 
 	proxyGetInterfaces: () => ipcRenderer.sendSync("proxyGetInterfaces"),
 
-	getCert: () => ipcRenderer.sendSync("getCert"),
+	getCert: () => ipcRenderer.send("getCert"),
+
+	updatePort: (data) => {
+		ipcRenderer.send("updatePort", data);
+	},
+
+	getAlarmPath: () => ipcRenderer.sendSync("getAlarmPath"),
 });
 
 // window.addEventListener("DOMContentLoaded", () => {

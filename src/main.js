@@ -9,6 +9,9 @@ const url = require("url");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
+// const alarmPath = path.join(process.resourcesPath, "alarms", "bell.mp3");
+const alarmPath = __dirname + "/../alarms/bell.mp3";
+
 global.gMapping = require("./mapping");
 global.appVersion = "testVersion";
 
@@ -24,6 +27,7 @@ let defaultConfig = {
 			maxLogEntries: 100,
 			httpsMode: true,
 			minimizeToTray: false,
+			alarmPath: alarmPath,
 		},
 		Proxy: { port: 8080, autoStart: false },
 		Plugins: {},
@@ -86,22 +90,6 @@ function createWindow() {
 
 app.on("ready", () => {
 	createWindow();
-
-	// storage.getAll((error, data) => {
-	// 	if (error) throw error;
-
-	// 	global.config = _.merge(defaultConfig, data);
-	// 	global.config.ConfigDetails = defaultConfigDetails.ConfigDetails;
-
-	// 	fs.ensureDirSync(global.config.Config.App.filesPath);
-	// 	fs.ensureDirSync(path.join(global.config.Config.App.filesPath, "plugins"));
-
-	// 	// global.plugins = loadPlugins();
-
-	// 	if (process.env.autostart || global.config.Config.Proxy.autoStart) {
-	// 		proxy.start(process.env.port || config.Config.Proxy.port);
-	// 	}
-	// });
 });
 
 app.on("window-all-closed", () => {
@@ -120,9 +108,12 @@ const proxy = new SWProxy();
 
 proxy.on("error", () => {});
 
+ipcMain.on("getAlarmPath", (event) => {
+	event.returnValue = config.Config.App.alarmPath;
+});
+
 // 프록시 러닝상태 체크
 ipcMain.on("proxyIsRunning", (event) => {
-	console.log("isRunning에 들어왔는지 확인한다.!!!!!!!!!");
 	event.returnValue = proxy.isRunning();
 });
 
@@ -131,17 +122,15 @@ ipcMain.on("proxyGetInterfaces", (event) => {
 });
 
 ipcMain.on("proxyStart", () => {
-	console.log("proxyStart 들어온거 맞니?");
 	proxy.start(config.Config.Proxy.port);
 });
 
 ipcMain.on("proxyStop", () => {
-	console.log("proxyStop 들어온거 맞니?");
 	proxy.stop();
 });
 
-ipcMain.on("greeting", (context, args) => {
-	console.log(context, args);
+ipcMain.on("updatePort", (context, args) => {
+	config.Config.Proxy.port = args;
 	context.returnValue = "nice";
 	// context.sender.send("greeting", "nice");
 });

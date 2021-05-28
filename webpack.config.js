@@ -9,7 +9,7 @@ module.exports = {
 		filename: "./bundle.js",
 		// publicPath: "/",
 	},
-	// target: "electron-renderer",
+	target: "electron-renderer",
 	devtool: "eval-cheap-module-source-map",
 	module: {
 		rules: [
