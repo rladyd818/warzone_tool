@@ -14,41 +14,6 @@ import "../css/Header.css";
 import { Rowing } from "@material-ui/icons";
 
 function Header() {
-	// componentDidMount() {
-	//   ipcRenderer.on('proxyStarted', () => {
-	//     this.setState({ proxyRunning: true });
-	//   });
-
-	//   ipcRenderer.on('proxyStopped', () => {
-	//     this.setState({ proxyRunning: false });
-	//   });
-	// }
-
-	// componentWillUnmount() {
-	//   ipcRenderer.removeAllListeners('proxyStarted');
-	//   ipcRenderer.removeAllListeners('proxyStopped');
-	// }
-
-	// toggleProxy() {
-	//   if (ipcRenderer.sendSync('proxyIsRunning')) {
-	//     ipcRenderer.send('proxyStop');
-	//   } else {
-	//     ipcRenderer.send('proxyStart');
-	//   }
-	// }
-
-	// getCert() {
-	//   ipcRenderer.send('getCert');
-	// }
-
-	// changePort(e) {
-	//   const port = Number(e.target.value);
-	//   config.Config.Proxy.port = port;
-	//   ipcRenderer.send('updateConfig');
-	// }
-	// const { store, dispatch } = useAppContext();
-
-	// console.log("proxy상태체크", window.electronProxy.isRunning());
 	const [proxyState, setProxyState] = useState(
 		window.electronProxy.isRunning()
 	);
@@ -59,30 +24,15 @@ function Header() {
 
 	const changeProxy = useCallback(() => {
 		let state = window.electronProxy.isRunning();
-		if (window.electronProxy.isRunning()) {
-			console.log("종료");
-			window.electronProxy.proxyStop();
-		} else {
-			console.log("시작");
-			window.electronProxy.proxyStart();
-		}
-		// state
-		// 	? window.electronProxy.proxyStop()
-		// 	: window.electronProxy.proxyStart();
-		console.log(
-			"실행되고 난 후 proxyState: ",
-			window.electronProxy.isRunning()
-		);
+		if (state) window.electronProxy.proxyStop();
+		else window.electronProxy.proxyStart();
+
 		setProxyState(window.electronProxy.isRunning());
 	}, [proxyState]);
 
 	// // proxy running상태 change
 	useEffect(() => {
-		window.electronProxy.onProxyStarted(() => {
-			console.log("use Effect에 started 들어왔음", proxyState);
-			// window.electronProxy.removeProxyStarted();
-			// setProxyState(true);
-		});
+		window.electronProxy.onProxyStarted(() => {});
 
 		return () => {
 			window.electronProxy.removeProxyStarted();
@@ -90,23 +40,12 @@ function Header() {
 	}, []);
 
 	useEffect(() => {
-		window.electronProxy.onProxyStopped(() => {
-			console.log("use Effect에  stopped로 들어왔음", proxyState);
-			// window.electronProxy.removeProxyStopped();
-			// setProxyState(false);
-		});
+		window.electronProxy.onProxyStopped(() => {});
 
 		return () => {
 			window.electronProxy.removeProxyStopped();
 		};
 	}, []);
-
-	// useEffect(() => {
-	// 	return () => {
-	// 		ipcRenderer.removeAllListeners("proxyStarted");
-	// 		ipcRenderer.removeAllListeners("proxyStopped");
-	// 	};
-	// }, []);
 
 	const BootstrapInput = withStyles((theme) => ({
 		root: {
@@ -178,9 +117,14 @@ function Header() {
 	const handleValue = (e) => {
 		const port = e.target.value;
 		setPort(port);
-		config.Config.Proxy.port = port;
+		window.electronProxy.updatePort(port);
 	};
 
+	const alarm = useCallback(() => {
+		let alarmPath = window.electronProxy.getAlarmPath();
+		console.log(alarmPath);
+		new Audio(`${alarmPath}/bell.MP3`).play();
+	}, []);
 	return (
 		<>
 			<div className="header__layout">
@@ -232,6 +176,9 @@ function Header() {
 					</div>
 				</FormControl>
 			</div>
+			<Button color="primary" onClick={alarm}>
+				알람테스트
+			</Button>
 			<hr></hr>
 		</>
 	);
