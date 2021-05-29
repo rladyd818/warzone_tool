@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
 	Button,
@@ -11,42 +11,19 @@ import {
 	Icon,
 } from "@material-ui/core";
 import "../css/Header.css";
-import { Rowing } from "@material-ui/icons";
 
-function Header() {
-	const [proxyState, setProxyState] = useState(
-		window.electronProxy.isRunning()
-	);
-
-	const copyCert = useCallback(() => {
-		window.electronProxy.getCert();
-	}, []);
-
-	const changeProxy = useCallback(() => {
-		let state = window.electronProxy.isRunning();
-		if (state) window.electronProxy.proxyStop();
-		else window.electronProxy.proxyStart();
-
-		setProxyState(window.electronProxy.isRunning());
-	}, [proxyState]);
-
-	// // proxy running상태 change
-	useEffect(() => {
-		window.electronProxy.onProxyStarted(() => {});
-
-		return () => {
-			window.electronProxy.removeProxyStarted();
-		};
-	}, []);
-
-	useEffect(() => {
-		window.electronProxy.onProxyStopped(() => {});
-
-		return () => {
-			window.electronProxy.removeProxyStopped();
-		};
-	}, []);
-
+function Header(props) {
+	const {
+		Ip,
+		Port,
+		interfaces,
+		proxyState,
+		alarm,
+		handleValue,
+		handleChange,
+		changeProxy,
+		copyCert,
+	} = props;
 	const BootstrapInput = withStyles((theme) => ({
 		root: {
 			"label + &": {
@@ -91,96 +68,74 @@ function Header() {
 		common: {
 			margin: theme.spacing(1),
 			marginLeft: theme.spacing(5),
-			marginTop: "16px",
-			// width: "100%",
+			marginTop: theme.spacing(2),
 		},
 		right: {
 			margin: theme.spacing(1),
-			// marginLeft: theme.spacing(10),
 		},
 		label: {
-			marginTop: "8px",
+			marginTop: theme.spacing(1),
 		},
 	}));
 
-	const interfaces = window.electronProxy
-		.proxyGetInterfaces()
-		.map((interfaceEntry, i) => ({ key: i, text: interfaceEntry, value: i }));
-
 	const classes = useStyles();
-	const [Ip, setIp] = React.useState(interfaces[0].text);
-	const handleChange = (event) => {
-		setIp(event.target.value);
-	};
-
-	const [Port, setPort] = React.useState(8080);
-	const handleValue = (e) => {
-		const port = e.target.value;
-		setPort(port);
-		window.electronProxy.updatePort(port);
-	};
-
-	const alarm = useCallback(() => {
-		let alarmPath = window.electronProxy.getAlarmPath();
-		console.log(alarmPath);
-		new Audio(`${alarmPath}/bell.MP3`).play();
-	}, []);
 	return (
-		<>
+		<div>
 			<div className="header__layout">
-				<FormControl className={classes.margin}>
-					<InputLabel
-						id="demo-customized-select-label3"
-						className={classes.label}
-					>
-						IP
-					</InputLabel>
-					{/* <h4 className="header__ip">IP:</h4> */}
-					{/* <label className="header__ip">IP</label> */}
-					<Select
-						labelId="demo-customized-select-label"
-						id="demo-customized-select"
-						value={Ip}
-						onChange={handleChange}
-						input={<BootstrapInput />}
-					>
-						{interfaces.map((value) => {
-							return <MenuItem value={value.text}>{value.text}</MenuItem>;
-						})}
-					</Select>
-					<TextField
-						className={classes.common}
-						label="Port"
-						value={Port}
-						onChange={handleValue}
-					></TextField>
-					<div className="header__right">
-						<Button
-							variant="contained"
-							color="primary"
-							className={classes.right}
-							endIcon={<Icon>send</Icon>}
-							onClick={copyCert}
+				<div style={{ display: "flex" }}>
+					<h1 style={{ marginTop: "8px" }}>Warzone Exporter</h1>
+					<FormControl className={classes.margin}>
+						<InputLabel
+							id="demo-customized-select-label3"
+							className={classes.label}
 						>
-							Get Cert
-						</Button>
-						<Button
-							variant="contained"
-							color="primary"
-							className={classes.right}
-							endIcon={<Icon>send</Icon>}
-							onClick={changeProxy}
+							IP
+						</InputLabel>
+						<Select
+							labelId="demo-customized-select-label"
+							id="demo-customized-select"
+							value={Ip}
+							onChange={handleChange}
+							input={<BootstrapInput />}
 						>
-							{proxyState ? "Proxy Stop" : "Proxy Start"}
-						</Button>
-					</div>
-				</FormControl>
+							{interfaces.map((value) => {
+								return <MenuItem value={value.text}>{value.text}</MenuItem>;
+							})}
+						</Select>
+						<TextField
+							className={classes.common}
+							label="Port"
+							value={Port}
+							onChange={handleValue}
+						></TextField>
+						<div className="header__right">
+							<Button
+								variant="contained"
+								color="primary"
+								className={classes.right}
+								endIcon={<Icon>send</Icon>}
+								onClick={copyCert}
+							>
+								Get Cert
+							</Button>
+							<Button
+								variant="contained"
+								color="primary"
+								className={classes.right}
+								endIcon={<Icon>send</Icon>}
+								onClick={changeProxy}
+							>
+								{proxyState ? "Proxy Stop" : "Proxy Start"}
+							</Button>
+						</div>
+					</FormControl>
+				</div>
 			</div>
 			<Button color="primary" onClick={alarm}>
 				알람테스트
 			</Button>
 			<hr></hr>
-		</>
+		</div>
 	);
 }
 

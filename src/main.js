@@ -1,6 +1,6 @@
 const SWProxy = require("./proxy/ProxyAnalysis");
 const fs = require("fs-extra");
-const storage = require("electron-json-storage");
+// const storage = require("electron-json-storage");
 // const windowStateKeeper = require("electron-window-state");
 const _ = require("lodash");
 const { app, BrowserWindow, ipcMain } = require("electron");
@@ -9,15 +9,14 @@ const url = require("url");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
-// const alarmPath = path.join(process.resourcesPath, "alarms", "bell.mp3");
-const alarmPath = __dirname + "/../alarms/bell.mp3";
+const alarmPath = isDev
+	? path.join(process.cwd(), "extraResources")
+	: path.join(process.resourcesPath, "extraResources");
 
 global.gMapping = require("./mapping");
 global.appVersion = "testVersion";
 
 let defaultFilePath = path.join(app.getPath("desktop"), `${app.name} Files`);
-// console.log(path.join(app.getPath("desktop"), `${app.name} Files`));
-// let defaultFilePath = `/Users/yongkim/Desktop/test/APIs`;
 let defaultConfig = {
 	Config: {
 		App: {
@@ -68,14 +67,22 @@ function createWindow() {
 
 	global.win = win;
 
-	const startUrl = isDev
-		? "http://localhost:8080"
-		: process.env.ELECTRON_START_URL ||
-		  url.format({
-				pathname: path.join(__dirname, "index.html"),
-				protocol: "file:",
-				slashes: true,
-		  });
+	const startUrl =
+		process.env.ELECTRON_START_URL ||
+		url.format({
+			pathname: path.join(__dirname, "index.html"),
+			protocol: "file:",
+			slashes: true,
+		});
+
+	// const startUrl = isDev
+	// 	? "http://localhost:8080"
+	// 	: process.env.ELECTRON_START_URL ||
+	// 	  url.format({
+	// 			pathname: path.join(__dirname, "index.html"),
+	// 			protocol: "file:",
+	// 			slashes: true,
+	// 	  });
 
 	global.win.loadURL(startUrl);
 

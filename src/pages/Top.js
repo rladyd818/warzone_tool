@@ -1,26 +1,37 @@
 import React, { useState, useEffect } from "react";
-import "./Main.css";
+import "../css/Main.css";
 
 function Top() {
-	const [commands, setCommands] = useState([]);
+	const [commands, setCommands] = useState([{ command: "", time: "" }]);
 	useEffect(() => {
 		window.electronProxy.onCommand((args) => {
-			// console.log("onCommand에 들어왔음", args);
 			setCommands(args);
 		});
 	}, []);
 
 	return (
-		<div>
-			<h1 style={{ textAlign: "center", marginTop: "8px" }}>
-				Warzone Exporter
-			</h1>
-			<div style={{ width: "100%", overflow: "hidden", height: "80%" }}>
-				{commands.map((command) => {
+		<div
+			style={{
+				position: "relative",
+				width: "100%",
+				display: "flex",
+				flexDirection: "column",
+			}}
+		>
+			<div
+				style={{
+					width: "100%",
+					overflow: "scroll",
+					height: "100%",
+					flex: 1,
+					flexDirection: "column",
+				}}
+			>
+				{commands.map((command, idx) => {
 					return (
-						<>
+						<div key={{ idx }}>
 							<hr></hr>
-							{new Date().toLocaleString()}
+							<h5 style={{ marginLeft: "8px" }}>{command.time}</h5>
 							<h3
 								style={{
 									textAlign: "center",
@@ -28,9 +39,9 @@ function Top() {
 									marginTop: "10px",
 								}}
 							>
-								{command}
+								{command.command}
 							</h3>
-						</>
+						</div>
 					);
 				})}
 			</div>

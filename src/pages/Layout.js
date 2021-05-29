@@ -1,13 +1,14 @@
 import React from "react";
-import Header from "../components/Header";
+import Header from "../container/Header";
 import Footer from "../components/Footer";
+import Sidebar from "../components/Sidebar";
 import "../css/Layout.css";
 
 function Layout({ children, match, location, history }) {
 	return (
 		<>
 			<Header />
-			{children}
+			<Sidebar>{children}</Sidebar>
 			<Footer />
 		</>
 	);

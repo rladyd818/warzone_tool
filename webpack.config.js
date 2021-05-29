@@ -1,5 +1,5 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
 	// webpack will take the files from ./src/index
 	entry: "./src/View.js",
@@ -7,9 +7,7 @@ module.exports = {
 	output: {
 		path: path.join(process.cwd(), "src"),
 		filename: "./bundle.js",
-		// publicPath: "/",
 	},
-	target: "electron-renderer",
 	devtool: "eval-cheap-module-source-map",
 	module: {
 		rules: [
@@ -33,7 +31,7 @@ module.exports = {
 		],
 	},
 	devServer: {
-		contentBase: path.join(__dirname, "./dist"),
+		contentBase: path.join(__dirname, "./src"),
 		port: 8080,
 	},
 	// plugins: [

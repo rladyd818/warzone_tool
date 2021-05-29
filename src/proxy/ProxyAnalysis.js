@@ -114,7 +114,8 @@ class SWProxy extends EventEmitter {
 					) {
 						self.clearLogs();
 					}
-					self.commandList.push(command);
+					let nowTime = new Date().toLocaleString();
+					self.commandList.unshift({ command: command, time: nowTime });
 					win.webContents.send("onCommand", self.commandList);
 
 					// Emit events, one for the specific API command and one for all commands
