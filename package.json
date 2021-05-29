@@ -31,7 +31,7 @@
 			"shortcutName": "shortcut"
 		},
 		"extraResources": [
-			"./alarms/**"
+			"./extraResources/**"
 		]
 	},
 	"author": "",
