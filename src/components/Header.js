@@ -18,7 +18,7 @@ function Header(props) {
 		Port,
 		interfaces,
 		proxyState,
-		alarm,
+		// alarm,
 		handleValue,
 		handleChange,
 		changeProxy,
@@ -131,9 +131,9 @@ function Header(props) {
 					</FormControl>
 				</div>
 			</div>
-			<Button color="primary" onClick={alarm}>
+			{/* <Button color="primary" onClick={alarm}>
 				알람테스트
-			</Button>
+			</Button> */}
 			<hr></hr>
 		</div>
 	);

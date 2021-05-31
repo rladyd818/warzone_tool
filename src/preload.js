@@ -41,7 +41,18 @@ contextBridge.exposeInMainWorld("electronProxy", {
 		ipcRenderer.send("updatePort", data);
 	},
 
-	getAlarmPath: () => ipcRenderer.sendSync("getAlarmPath"),
+	getExtraPath: () => ipcRenderer.sendSync("getExtraPath"),
+
+	updateSetting: (args) => ipcRenderer.send("updateSetting", args),
+
+	saveSetting: () => ipcRenderer.send("saveSetting"),
+
+	dungeonAlarm: (callback) => {
+		ipcRenderer.on("dungeonAlarm", (event, args) => {
+			console.log("dungeonAlarm들어옴");
+			callback(args);
+		});
+	},
 });
 
 // window.addEventListener("DOMContentLoaded", () => {

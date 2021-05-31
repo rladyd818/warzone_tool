@@ -1,5 +1,1 @@
-{
-	"raidMode": true,
-	"dungeonMode": true,
-	"arenaMode": true
-}
+{"raidMode":{"enabled":true,"count":9},"dungeonMode":{"enabled":true,"count":"1"},"arenaMode":{"enabled":true,"count":1}}
