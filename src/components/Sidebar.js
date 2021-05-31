@@ -9,6 +9,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MailIcon from "@material-ui/icons/Mail";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory, Redirect } from "react-router-dom";
 import "../css/Main.css";
 
 const drawerWidth = 200;
@@ -45,11 +46,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Sidebar({ children }) {
 	const classes = useStyles();
+	const history = useHistory();
+	const pages = ["/", "/dungeon", "/raid", "/arena", "/common"];
+	const [nowPage, setNowPage] = useState(0);
 
-	const [item, setItem] = useState(0);
 	const itemClick = useCallback((idx) => {
 		return () => {
-			setItem(idx);
+			setNowPage(idx);
+			history.push(pages[idx]);
 		};
 	}, []);
 
@@ -57,13 +61,17 @@ function Sidebar({ children }) {
 		<div>
 			<Divider className={{ backgroundColor: "#fafafa" }} />
 			<List>
-				{["뇌솔드 모드", "아레나 모드", "던전 모드", "공통 알람"].map(
+				{["로그", "던전 모드", "뇌솔드 모드", "아레나 모드", "공통 알람"].map(
 					(text, index) => (
 						<ListItem
 							button
 							key={text}
 							onClick={itemClick(index)}
-							style={index === item ? { backgroundColor: "#6573c3" } : {}}
+							style={
+								index === nowPage
+									? { backgroundColor: "#6573c3" }
+									: { backgroundColor: "#3f51b5" }
+							}
 						>
 							<ListItemIcon>
 								{index % 2 === 0 ? (

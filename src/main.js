@@ -9,9 +9,15 @@ const url = require("url");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
-const alarmPath = isDev
+const extraPath = isDev
 	? path.join(process.cwd(), "extraResources")
 	: path.join(process.resourcesPath, "extraResources");
+
+const userSettingPath = path.join(extraPath, "userSetting.json");
+global.userSetting = fs.readJSONSync(userSettingPath);
+console.log("초기 세팅 userSetting값", global.userSetting);
+// const userSettingPath = path.join(extraPath, "userSetting.json");
+// global.userSetting = fs.readJSONSync(userSettingPath);
 
 global.gMapping = require("./mapping");
 global.appVersion = "testVersion";
@@ -26,7 +32,8 @@ let defaultConfig = {
 			maxLogEntries: 100,
 			httpsMode: true,
 			minimizeToTray: false,
-			alarmPath: alarmPath,
+			extraPath: extraPath,
+			userSettingPath: userSettingPath,
 		},
 		Proxy: { port: 8080, autoStart: false },
 		Plugins: {},
@@ -111,12 +118,23 @@ app.on("activate", () => {
 	}
 });
 
+// let dungeonPath = path.join(__dirname, "plugins", "dungeon");
+// console.log(dungeonPath);
+// global.config.Config.plugins["dungeon"] = require(`./plugins/dungeon`);
+// const dungeon = require(`./plugins/dungeon`);
+// config.Config.plugins.dungeon = dungeon;
+
+// // setInterval(() => {});
+// for (let key in config.Config.plugins) {
+// 	config.Config.plugins[key].init(proxy, global.userSetting);
+// }
+
 const proxy = new SWProxy();
 
 proxy.on("error", () => {});
 
-ipcMain.on("getAlarmPath", (event) => {
-	event.returnValue = config.Config.App.alarmPath;
+ipcMain.on("getExtraPath", (event) => {
+	event.returnValue = config.Config.App.extraPath;
 });
 
 // 프록시 러닝상태 체크
@@ -169,6 +187,33 @@ ipcMain.on("getCert", async () => {
 		});
 	}
 });
+
+ipcMain.on("updateSetting", (context, args) => {
+	console.log("updateSetting들어옴");
+	global.userSetting[args.key] = args.value;
+	console.log("update후에 userSetting값: ", global.userSetting);
+	config.Config.Plugins["dungeon"].updateUserSetting(
+		global.userSetting[args.key]
+	);
+	saveSetting();
+	context.returnValue = true;
+});
+
+ipcMain.on("saveSetting", () => {
+	saveSetting();
+});
+
+const saveSetting = () => {
+	fs.writeJSONSync(config.Config.App.userSettingPath, global.userSetting);
+};
+
+const dungeon = require(`./plugins/dungeon`);
+global.config.Config.Plugins.dungeon = dungeon;
+
+// setInterval(() => {});
+for (let key in config.Config.Plugins) {
+	global.config.Config.Plugins[key].init(proxy, global.userSetting);
+}
 
 // app.on("ready", () => {
 // 	app.setAppUserModelId(process.execPath);

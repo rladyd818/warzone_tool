@@ -74,7 +74,7 @@ class SWProxy extends EventEmitter {
 						return callback();
 					}
 
-					console.log("요청정보: ", reqData);
+					// console.log("요청정보: ", reqData);
 					const { command } = respData;
 					const timeStamp = new Date().getTime();
 					const jsonPath = path.join(
@@ -185,11 +185,8 @@ class SWProxy extends EventEmitter {
 	}
 
 	stop() {
-		console.log("stop함수에 들어오기는 했니?");
 		this.proxy.close();
-		console.log("close는 됐나?");
 		this.proxy = null;
-		console.log("그럼 null은 됐나?");
 		win.webContents.send("proxyStopped");
 		this.log({ type: "info", source: "proxy", message: "Proxy stopped" });
 	}
@@ -215,6 +212,14 @@ class SWProxy extends EventEmitter {
 		return false;
 	}
 
+	commit(command) {
+		console.log("command값이 뭐니?", command);
+		if (!command) {
+			return;
+		}
+		console.log("commit들어옴");
+		win.webContents.send("dungeonAlarm", { command: command, alarm: true });
+	}
 	log(entry) {
 		if (!entry) {
 			return;

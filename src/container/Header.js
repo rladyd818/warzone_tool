@@ -53,11 +53,11 @@ function Header() {
 		window.electronProxy.updatePort(port);
 	};
 
-	const alarm = useCallback(() => {
-		let alarmPath = window.electronProxy.getAlarmPath();
-		console.log(alarmPath);
-		new Audio(`${alarmPath}/bell.MP3`).play();
-	}, []);
+	// const alarm = useCallback(() => {
+	// 	let alarmPath = window.electronProxy.getAlarmPath();
+	// 	console.log(alarmPath);
+	// 	new Audio(`${alarmPath}/bell.MP3`).play();
+	// }, []);
 
 	return (
 		<HeaderComp
@@ -65,7 +65,7 @@ function Header() {
 			Port={Port}
 			interfaces={interfaces}
 			proxyState={proxyState}
-			alarm={alarm}
+			// alarm={alarm}
 			handleValue={handleValue}
 			handleChange={handleChange}
 			changeProxy={changeProxy}

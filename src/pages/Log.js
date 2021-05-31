@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/Main.css";
 
-function Top() {
+function Log() {
 	const [commands, setCommands] = useState([{ command: "", time: "" }]);
 	useEffect(() => {
 		window.electronProxy.onCommand((args) => {
@@ -49,4 +49,4 @@ function Top() {
 	);
 }
 
-export default Top;
+export default Log;
