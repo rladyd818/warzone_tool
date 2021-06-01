@@ -218,7 +218,7 @@ class SWProxy extends EventEmitter {
 			return;
 		}
 		console.log("commit들어옴");
-		win.webContents.send("dungeonAlarm", { command: command, alarm: true });
+		win.webContents.send(command, { command: command, alarm: true });
 	}
 	log(entry) {
 		if (!entry) {

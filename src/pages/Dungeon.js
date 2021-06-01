@@ -29,28 +29,48 @@ function Dungeon() {
 	// const handleChange = (event) => {
 	// 	setState({ ...state, [event.target.name]: event.target.checked });
 	// };
+	const [dungeonMode, setDungeonMode] = useState(
+		window.electronProxy.getUserSetting("dungeonMode")
+	);
+	console.log(dungeonMode);
+	const [checkedA, setCheckedA] = useState(dungeonMode.enabled);
 
-	const [checkedA, setCheckedA] = useState(true);
-
-	const handleChange = (e) => {
+	const handleChange = useCallback((e) => {
 		setCheckedA(e.target.checked);
-	};
+	});
 
-	const [count, setCount] = useState(9);
+	const [count, setCount] = useState(dungeonMode.count);
 	const countChange = useCallback(
 		(e) => {
 			setCount(e.target.value);
-			window.electronProxy.updateSetting({
-				key: "dungeonMode",
-				value: { enabled: checkedA, count: e.target.value },
-			});
+			// saveSetting(e);
+			// window.electronProxy.updateSetting({
+			// 	key: "dungeonMode",
+			// 	value: { enabled: checkedA, count: e.target.value },
+			// });
 		},
 		[count]
 	);
 
+	// const saveSetting = useCallback((e) => {
+	// 	window.electronProxy.updateSetting({
+	// 		key: "dungeonMode",
+	// 		value: { enabled: checkedA, count: e.target.value },
+	// 	});
+	// }, []);
+
+	useEffect(() => {
+		console.log("dungeon에 updateSetting들어옴");
+		window.electronProxy.updateSetting({
+			key: "dungeonMode",
+			value: { enabled: checkedA, count: count },
+		});
+		setDungeonMode({ enabled: checkedA, count: count });
+	}, [count, checkedA]);
+
 	useEffect(() => {
 		window.electronProxy.dungeonAlarm((args) => {
-			console.log("args들어옴", args);
+			console.log("dungeon에 args들어옴", args);
 			if (args.alarm === true) {
 				alarm();
 			}
