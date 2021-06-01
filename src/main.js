@@ -188,11 +188,18 @@ ipcMain.on("getCert", async () => {
 	}
 });
 
+ipcMain.on("getUserSetting", (context, args) => {
+	console.log("ipcMain에 getUserSetting들어옴");
+	console.log(args);
+	context.returnValue = global.userSetting[args];
+});
+
 ipcMain.on("updateSetting", (context, args) => {
 	console.log("updateSetting들어옴");
 	global.userSetting[args.key] = args.value;
 	console.log("update후에 userSetting값: ", global.userSetting);
-	config.Config.Plugins["dungeon"].updateUserSetting(
+
+	config.Config.Plugins[args.key].updateUserSetting(
 		global.userSetting[args.key]
 	);
 	saveSetting();
@@ -207,8 +214,11 @@ const saveSetting = () => {
 	fs.writeJSONSync(config.Config.App.userSettingPath, global.userSetting);
 };
 
+// 나중에 iterator로 require하도록 수정해야함.
 const dungeon = require(`./plugins/dungeon`);
-global.config.Config.Plugins.dungeon = dungeon;
+const raid = require(`./plugins/raid`);
+global.config.Config.Plugins.dungeonMode = dungeon;
+global.config.Config.Plugins.raidMode = raid;
 
 // setInterval(() => {});
 for (let key in config.Config.Plugins) {
