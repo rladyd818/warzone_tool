@@ -18,7 +18,7 @@ function Header() {
 		setProxyState(window.electronProxy.isRunning());
 	}, [proxyState]);
 
-	// // proxy running상태 change
+	// proxy running상태 change
 	useEffect(() => {
 		window.electronProxy.onProxyStarted(() => {});
 		window.electronProxy.onProxyStopped(() => {});
@@ -28,14 +28,6 @@ function Header() {
 			window.electronProxy.removeProxyStopped();
 		};
 	}, []);
-
-	// useEffect(() => {
-	// 	window.electronProxy.onProxyStopped(() => {});
-
-	// 	return () => {
-	// 		window.electronProxy.removeProxyStopped();
-	// 	};
-	// }, []);
 
 	const interfaces = window.electronProxy
 		.proxyGetInterfaces()
@@ -53,19 +45,12 @@ function Header() {
 		window.electronProxy.updatePort(port);
 	};
 
-	// const alarm = useCallback(() => {
-	// 	let alarmPath = window.electronProxy.getAlarmPath();
-	// 	console.log(alarmPath);
-	// 	new Audio(`${alarmPath}/bell.MP3`).play();
-	// }, []);
-
 	return (
 		<HeaderComp
 			Ip={Ip}
 			Port={Port}
 			interfaces={interfaces}
 			proxyState={proxyState}
-			// alarm={alarm}
 			handleValue={handleValue}
 			handleChange={handleChange}
 			changeProxy={changeProxy}

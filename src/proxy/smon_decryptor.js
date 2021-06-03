@@ -39,5 +39,4 @@ module.exports = {
 	decrypt_request: (text) => JSON.parse(decrypt(text)),
 	decrypt_response: (text) =>
 		JSON.parse(zlib.inflateSync(Buffer.from(decrypt(text), "latin1"))),
-	encrypt_request: (text) => encrypt(text),
 };

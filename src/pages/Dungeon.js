@@ -32,45 +32,47 @@ function Dungeon() {
 	const [dungeonMode, setDungeonMode] = useState(
 		window.electronProxy.getUserSetting("dungeonMode")
 	);
-	console.log(dungeonMode);
-	const [checkedA, setCheckedA] = useState(dungeonMode.enabled);
 
+	// using alarm
+	const [checkedA, setCheckedA] = useState(dungeonMode.enabled);
 	const handleChange = useCallback((e) => {
 		setCheckedA(e.target.checked);
 	});
+
+	// using dungeon record
+	// const [checkedB, setCheckedB] = useState(dungeonMode.record);
+	// const handleChange = useCallback((e) => {
+	// 	setCheckedA(e.target.checked);
+	// });
 
 	const [count, setCount] = useState(dungeonMode.count);
 	const countChange = useCallback(
 		(e) => {
 			setCount(e.target.value);
-			// saveSetting(e);
-			// window.electronProxy.updateSetting({
-			// 	key: "dungeonMode",
-			// 	value: { enabled: checkedA, count: e.target.value },
-			// });
 		},
 		[count]
 	);
 
-	// const saveSetting = useCallback((e) => {
-	// 	window.electronProxy.updateSetting({
-	// 		key: "dungeonMode",
-	// 		value: { enabled: checkedA, count: e.target.value },
-	// 	});
-	// }, []);
+	const [volume, setVolume] = useState(dungeonMode.volume);
+	const volumeChange = useCallback(
+		(e) => {
+			console.log(volume);
+			setVolume(e.target.value);
+		},
+		[volume]
+	);
 
 	useEffect(() => {
-		console.log("dungeon에 updateSetting들어옴");
+		let value = { enabled: checkedA, count: count, volume: volume };
 		window.electronProxy.updateSetting({
 			key: "dungeonMode",
-			value: { enabled: checkedA, count: count },
+			value: value,
 		});
-		setDungeonMode({ enabled: checkedA, count: count });
-	}, [count, checkedA]);
+		setDungeonMode(value);
+	}, [count, checkedA, volume]);
 
 	useEffect(() => {
 		window.electronProxy.dungeonAlarm((args) => {
-			console.log("dungeon에 args들어옴", args);
 			if (args.alarm === true) {
 				alarm();
 			}
@@ -79,8 +81,14 @@ function Dungeon() {
 	// 던전 알람
 	const alarm = useCallback(() => {
 		let alarmPath = window.electronProxy.getExtraPath();
-		console.log(alarmPath);
-		new Audio(`${alarmPath}/bell.MP3`).play();
+		let audio = new Audio(`${alarmPath}/bell.MP3`);
+		let _volume = (volume / 10).toFixed(1);
+		console.log(volume);
+		console.log(_volume);
+		if (_volume > 0 || _volume < 11) audio.volume = _volume;
+		else audio.volume = 0.5; // 0.5 is default
+
+		audio.play();
 	}, []);
 
 	return (
@@ -97,6 +105,13 @@ function Dungeon() {
 				}
 				label="던전알림 사용"
 			/>
+			<TextField
+				label="Alarm volume"
+				value={volume}
+				type="number"
+				placeholder={"Set volume level 1 ~ 10"}
+				onChange={volumeChange}
+			></TextField>
 			<TextField
 				label="회차 설정"
 				value={count}

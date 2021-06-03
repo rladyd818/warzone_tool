@@ -1,1 +1,1 @@
-{"raidMode":{"enabled":true,"count":"2"},"dungeonMode":{"enabled":true,"count":"1"},"arenaMode":{"enabled":true,"count":1}}
+{"raidMode":{"enabled":true,"count":"2","volume":5},"dungeonMode":{"enabled":true,"count":"4","volume":"10"},"arenaMode":{"enabled":true,"count":1,"volume":5}}
