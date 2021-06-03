@@ -35,19 +35,25 @@ function Raid() {
 		},
 		[count]
 	);
+	const [volume, setVolume] = useState(raidMode.volume);
+	const volumeChange = useCallback(
+		(e) => {
+			setVolume(e.target.value);
+		},
+		[volume]
+	);
 
 	useEffect(() => {
-		console.log("raid에 updateSetting들어옴");
+		let value = { enabled: checkedA, count: count, volume: volume };
 		window.electronProxy.updateSetting({
 			key: "raidMode",
-			value: { enabled: checkedA, count: count },
+			value: value,
 		});
-		setRaidMode({ enabled: checkedA, count: count });
-	}, [count, checkedA]);
+		setRaidMode(value);
+	}, [count, checkedA, volume]);
 
 	useEffect(() => {
 		window.electronProxy.raidAlarm((args) => {
-			console.log("raid에 args들어옴", args);
 			if (args.alarm === true) {
 				alarm();
 			}
@@ -56,16 +62,19 @@ function Raid() {
 	// 던전 알람
 	const alarm = useCallback(() => {
 		let alarmPath = window.electronProxy.getExtraPath();
-		console.log(alarmPath);
 		new Audio(`${alarmPath}/alarm10.MP3`).play();
-	}, []);
+		let _volume = Math.ceil(volume / 10);
+		if (_volume > 0 || _volume < 11) audio.volume = _volume;
+		else audio.volume = 5; // 5 is default
+
+		audio.play();
+	}, [volume]);
 
 	return (
 		<FormGroup row className={classes.formGroup}>
 			<FormControlLabel
 				control={
 					<Checkbox
-						// checked={state.checkedB}
 						checked={checkedA}
 						onChange={handleChange}
 						name="checkedA"
@@ -74,6 +83,13 @@ function Raid() {
 				}
 				label="레이드알림 사용"
 			/>
+			<TextField
+				label="Alarm volume"
+				value={volume}
+				type="number"
+				placeholder={"Set volume level 1 ~ 10"}
+				onChange={volumeChange}
+			></TextField>
 			<TextField
 				label="회차 설정"
 				value={count}

@@ -51,14 +51,12 @@ contextBridge.exposeInMainWorld("electronProxy", {
 
 	dungeonAlarm: (callback) => {
 		ipcRenderer.on("dungeonAlarm", (event, args) => {
-			console.log("dungeonAlarm들어옴");
 			callback(args);
 		});
 	},
 
 	raidAlarm: (callback) => {
 		ipcRenderer.on("raidAlarm", (event, args) => {
-			console.log("raidAlarm들어옴");
 			callback(args);
 		});
 	},

@@ -1,6 +1,6 @@
 {
 	"name": "Warzone",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "This is sw-packet analysis",
 	"main": "./src/main.js",
 	"scripts": {

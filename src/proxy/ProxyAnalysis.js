@@ -9,11 +9,7 @@ const uuidv4 = require("uuid/v4");
 const Proxy = require("http-mitm-proxy");
 const EventEmitter = require("events");
 
-const {
-	decrypt_request,
-	decrypt_response,
-	encrypt_request,
-} = require("./smon_decryptor");
+const { decrypt_request, decrypt_response } = require("./smon_decryptor");
 
 class SWProxy extends EventEmitter {
 	constructor() {
@@ -39,7 +35,6 @@ class SWProxy extends EventEmitter {
 		});
 
 		this.proxy.onRequest(function (ctx, callback) {
-			// console.log("onRequest탔음");
 			if (ctx.clientToProxyRequest.url.includes("/api/gateway_c2.php")) {
 				ctx.use(Proxy.gunzip);
 				ctx.SWRequestChunks = [];
@@ -152,10 +147,6 @@ class SWProxy extends EventEmitter {
 		this.proxy.listen(
 			{ port, sslCaDir: path.join(app.getPath("userData"), "swcerts") },
 			(e) => {
-				console.log(
-					"리스닝 하는 위치:",
-					path.join(app.getPath("userData"), "swcerts")
-				);
 				this.log({
 					type: "info",
 					source: "proxy",
@@ -163,20 +154,6 @@ class SWProxy extends EventEmitter {
 				});
 			}
 		);
-		// this.proxy.listen(
-		// 	{
-		// 		port,
-		// 		sslCaDir: "/Users/yongkim/Desktop/test/swcerts",
-		// 	},
-		// 	(e) => {
-		// 		if (e !== undefined) console.log("프록시 리스닝 에러", e);
-		// 		this.log({
-		// 			type: "info",
-		// 			source: "proxy",
-		// 			message: `Now listening on port ${port}`,
-		// 		});
-		// 	}
-		// );
 
 		if (process.env.autostart) {
 			console.log(`SW Exporter Proxy is listening on port ${port}`);
@@ -213,11 +190,9 @@ class SWProxy extends EventEmitter {
 	}
 
 	commit(command) {
-		console.log("command값이 뭐니?", command);
 		if (!command) {
 			return;
 		}
-		console.log("commit들어옴");
 		win.webContents.send(command, { command: command, alarm: true });
 	}
 	log(entry) {
