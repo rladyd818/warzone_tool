@@ -50,12 +50,19 @@ function Sidebar({ children }) {
 	const pages = ["/", "/dungeon", "/raid", "/arena", "/common"];
 	const [nowPage, setNowPage] = useState(0);
 
-	const itemClick = useCallback((idx) => {
+	// const itemClick = useCallback((idx) => {
+	// 	return () => {
+	// 		setNowPage(idx);
+	// 		history.push(pages[idx]);
+	// 	};
+	// });
+	const itemClick = (idx) => {
 		return () => {
+			console.log("메뉴클릭 들어옴");
 			setNowPage(idx);
 			history.push(pages[idx]);
 		};
-	}, []);
+	};
 
 	const drawer = (
 		<div>

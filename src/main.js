@@ -91,7 +91,7 @@ function createWindow() {
 	global.win.loadURL(startUrl);
 
 	// if (isDev) {
-	global.win.webContents.openDevTools();
+	// global.win.webContents.openDevTools();
 	// }
 
 	global.win.on("closed", () => {
@@ -174,6 +174,7 @@ ipcMain.on("getCert", async () => {
 });
 
 ipcMain.on("getUserSetting", (context, args) => {
+	console.log(global.userSetting[args]);
 	context.returnValue = global.userSetting[args];
 });
 
@@ -200,10 +201,12 @@ const dungeon = require(`./plugins/dungeon`);
 const raid = require(`./plugins/raid`);
 const profile = require(`./plugins/profile`);
 const worldBoss = require(`./plugins/worldBoss`);
+const common = require(`./plugins/common`);
 global.config.Config.Plugins.dungeonMode = dungeon;
 global.config.Config.Plugins.raidMode = raid;
 global.config.Config.Plugins.profile = profile;
 global.config.Config.Plugins.worldBoss = worldBoss;
+global.config.Config.Plugins.common = common;
 
 for (let key in config.Config.Plugins) {
 	global.config.Config.Plugins[key].init(proxy, global.userSetting);
