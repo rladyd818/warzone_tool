@@ -32,7 +32,7 @@ function Dungeon() {
 	const [dungeonMode, setDungeonMode] = useState(
 		window.electronProxy.getUserSetting("dungeonMode")
 	);
-
+	console.log("던전모드", dungeonMode);
 	// using alarm
 	const [checkedA, setCheckedA] = useState(dungeonMode.enabled);
 	const handleChange = useCallback((e) => {
@@ -56,14 +56,18 @@ function Dungeon() {
 	const [volume, setVolume] = useState(dungeonMode.volume);
 	const volumeChange = useCallback(
 		(e) => {
-			console.log(volume);
+			console.log(e.target.value);
 			setVolume(e.target.value);
 		},
 		[volume]
 	);
 
 	useEffect(() => {
-		let value = { enabled: checkedA, count: count, volume: volume };
+		let value = {
+			enabled: checkedA,
+			count: Number(count),
+			volume: Number(volume),
+		};
 		window.electronProxy.updateSetting({
 			key: "dungeonMode",
 			value: value,
@@ -71,25 +75,35 @@ function Dungeon() {
 		setDungeonMode(value);
 	}, [count, checkedA, volume]);
 
-	useEffect(() => {
-		window.electronProxy.dungeonAlarm((args) => {
-			if (args.alarm === true) {
-				alarm();
-			}
-		});
-	}, []);
-	// 던전 알람
-	const alarm = useCallback(() => {
-		let alarmPath = window.electronProxy.getExtraPath();
-		let audio = new Audio(`${alarmPath}/bell.MP3`);
-		let _volume = (volume / 10).toFixed(1);
-		console.log(volume);
-		console.log(_volume);
-		if (_volume > 0 || _volume < 11) audio.volume = _volume;
-		else audio.volume = 0.5; // 0.5 is default
+	// useEffect(() => {
+	window.electronProxy.dungeonAlarm((args) => {
+		console.log("프론트에 던전알람 들어옴", args);
+		if (args.alarm === true) {
+			let alarmPath = window.electronProxy.getExtraPath();
+			let audio = new Audio(`${alarmPath}/bell.MP3`);
+			let _volume = (volume / 10).toFixed(1);
+			console.log(volume);
+			console.log(_volume);
+			if (_volume > 0 || _volume < 11) audio.volume = _volume;
+			else audio.volume = 0.5; // 0.5 is default
 
-		audio.play();
-	}, []);
+			audio.play();
+		}
+	});
+	// }, []);
+
+	// 던전 알람
+	// const alarm = useCallback(() => {
+	// 	let alarmPath = window.electronProxy.getExtraPath();
+	// 	let audio = new Audio(`${alarmPath}/bell.MP3`);
+	// 	let _volume = (volume / 10).toFixed(1);
+	// 	console.log(volume);
+	// 	console.log(_volume);
+	// 	if (_volume > 0 || _volume < 11) audio.volume = _volume;
+	// 	else audio.volume = 0.5; // 0.5 is default
+
+	// 	audio.play();
+	// }, [volume]);
 
 	return (
 		<FormGroup row className={classes.formGroup}>

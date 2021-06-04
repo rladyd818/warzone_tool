@@ -44,7 +44,11 @@ function Raid() {
 	);
 
 	useEffect(() => {
-		let value = { enabled: checkedA, count: count, volume: volume };
+		let value = {
+			enabled: checkedA,
+			count: Number(count),
+			volume: Number(volume),
+		};
 		window.electronProxy.updateSetting({
 			key: "raidMode",
 			value: value,
@@ -55,20 +59,26 @@ function Raid() {
 	useEffect(() => {
 		window.electronProxy.raidAlarm((args) => {
 			if (args.alarm === true) {
-				alarm();
+				let alarmPath = window.electronProxy.getExtraPath();
+				new Audio(`${alarmPath}/alarm10.MP3`).play();
+				let _volume = Math.ceil(volume / 10);
+				if (_volume > 0 || _volume < 11) audio.volume = _volume;
+				else audio.volume = 0.5; // 5 is default
+
+				audio.play();
 			}
 		});
 	}, []);
 	// 던전 알람
-	const alarm = useCallback(() => {
-		let alarmPath = window.electronProxy.getExtraPath();
-		new Audio(`${alarmPath}/alarm10.MP3`).play();
-		let _volume = Math.ceil(volume / 10);
-		if (_volume > 0 || _volume < 11) audio.volume = _volume;
-		else audio.volume = 5; // 5 is default
+	// const alarm = useCallback(() => {
+	// 	let alarmPath = window.electronProxy.getExtraPath();
+	// 	new Audio(`${alarmPath}/alarm10.MP3`).play();
+	// 	let _volume = Math.ceil(volume / 10);
+	// 	if (_volume > 0 || _volume < 11) audio.volume = _volume;
+	// 	else audio.volume = 5; // 5 is default
 
-		audio.play();
-	}, [volume]);
+	// 	audio.play();
+	// }, [volume]);
 
 	return (
 		<FormGroup row className={classes.formGroup}>
